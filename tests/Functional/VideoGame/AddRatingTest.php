@@ -8,7 +8,7 @@ use App\Model\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ReviewControllerTest extends WebTestCase
+final class AddRatingTest extends WebTestCase
 {
     private \Symfony\Bundle\FrameworkBundle\KernelBrowser $client;
 
@@ -28,6 +28,7 @@ final class ReviewControllerTest extends WebTestCase
         $this->client->loginUser($user);
     }
 
+    // test l'ajout d'une note valide
     public function testShouldPostReview(): void
     {
         $this->login();
@@ -49,6 +50,7 @@ final class ReviewControllerTest extends WebTestCase
         self::assertSelectorTextContains('div.list-group-item:last-child span.value', '4');
     }
 
+    // test l'ajout d'une note valide avec un commentaire vide
     public function testShouldNotAllowMultipleReviewsFromSameUser(): void
     {
         $this->login();
@@ -65,6 +67,8 @@ final class ReviewControllerTest extends WebTestCase
         self::assertSelectorNotExists('form[name="review"]');
     }
 
+
+    // test erreur de validation
     public function testShouldRejectInvalidReview(): void
     {
         $this->login();
@@ -89,6 +93,7 @@ final class ReviewControllerTest extends WebTestCase
         self::assertSelectorExists('.form-error-message');
     }
 
+    // test restriction d'accès
     public function testFormShouldBeHiddenForGuest(): void
     {
         $this->client->request('GET', '/jeu-video-49');
