@@ -18,6 +18,7 @@ use function array_fill_callback;
 
 final class VideoGameFixtures extends Fixture implements DependentFixtureInterface
 {
+    // genérateur de données fictives
     public function __construct(
         private readonly Generator $faker,
         private readonly CalculateAverageRating $calculateAverageRating,
@@ -25,6 +26,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
     ) {
     }
 
+    
     public function load(ObjectManager $manager): void
     {
         $tags = $manager->getRepository(Tag::class)->findAll();
@@ -37,6 +39,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
         /** @var string $fakeText */
         $fakeText = $this->faker->paragraphs(5, true);
 
+        // Création de 50 jeux vidéo avec des données fictives
         $videoGames = array_fill_callback(0, 50, fn (int $index): VideoGame => (new VideoGame)
             ->setTitle(sprintf('Jeu vidéo %d', $index))
             ->setDescription($fakeText)
@@ -45,8 +48,9 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
             ->setRating(($index % 5) + 1)
             ->setImageName(sprintf('video_game_%d.png', $index))
             ->setImageSize(2_098_872)
-        );
+        );  
 
+        // Ajout de 5 tags à chaque jeu vidéo
         array_walk($videoGames, static function (VideoGame $videoGame, int $index) use ($tags) {
             for ($tagIndex = 0; $tagIndex < 5; $tagIndex++) {
                 $videoGame->getTags()->add($tags[($index + $tagIndex) % count($tags)]);
@@ -57,6 +61,8 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
 
         $manager->flush();
 
+        // création de 5 avis pour chaque jeu vidéo
+        // chaque avis est associé à un utilisateur différent
         array_walk($videoGames, function (VideoGame $videoGame, int $index) use ($users, $manager) {
             $filteredUsers = $users[$index % count($users)];
 
