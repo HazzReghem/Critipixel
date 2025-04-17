@@ -40,30 +40,54 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
         $fakeText = $this->faker->paragraphs(5, true);
 
         // Création de 50 jeux vidéo avec des données fictives
-        $videoGames = array_fill_callback(0, 50, fn (int $index): VideoGame => (new VideoGame)
-            ->setTitle(sprintf('Jeu vidéo %d', $index))
-            ->setDescription($fakeText)
-            ->setReleaseDate((new DateTimeImmutable())->sub(new DateInterval(sprintf('P%dD', $index))))
-            ->setTest($fakeText)
-            ->setRating(($index % 5) + 1)
-            ->setImageName(sprintf('video_game_%d.png', $index))
-            ->setImageSize(2_098_872)
-        );  
+
+        $videoGames = [];
+
+        for ($i = 0; $i < 50; $i++) {
+            $videoGame = (new VideoGame())
+                ->setTitle(sprintf('Jeu vidéo %d', $i))
+                ->setDescription($fakeText)
+                ->setReleaseDate((new DateTimeImmutable())->sub(new DateInterval(sprintf('P%dD', $i))))
+                ->setTest($fakeText)
+                ->setRating(($i % 5) + 1)
+                ->setImageName(sprintf('video_game_%d.png', $i))
+                ->setImageSize(2_098_872);
+
+            $videoGames[] = $videoGame;
+        }
+
+        // $videoGames = array_fill_callback(0, 50, fn (int $index): VideoGame => (new VideoGame)
+        //     ->setTitle(sprintf('Jeu vidéo %d', $index))
+        //     ->setDescription($fakeText)
+        //     ->setReleaseDate((new DateTimeImmutable())->sub(new DateInterval(sprintf('P%dD', $index))))
+        //     ->setTest($fakeText)
+        //     ->setRating(($index % 5) + 1)
+        //     ->setImageName(sprintf('video_game_%d.png', $index))
+        //     ->setImageSize(2_098_872)
+        // );  
 
         // Ajout de 5 tags à chaque jeu vidéo
-        array_walk($videoGames, static function (VideoGame $videoGame, int $index) use ($tags) {
+
+        // array_walk($videoGames, static function (VideoGame $videoGame, int $index) use ($tags) {
+        foreach ($videoGames as $index => $videoGame) {
             for ($tagIndex = 0; $tagIndex < 5; $tagIndex++) {
                 $videoGame->getTags()->add($tags[($index + $tagIndex) % count($tags)]);
             }
-        });
+        };
 
-        array_walk($videoGames, [$manager, 'persist']);
+        foreach ($videoGames as $videoGame) {
+            $manager->persist($videoGame);
+        }
+        
+        // array_walk($videoGames, [$manager, 'persist']);
 
         $manager->flush();
 
         // création de 5 avis pour chaque jeu vidéo
         // chaque avis est associé à un utilisateur différent
-        array_walk($videoGames, function (VideoGame $videoGame, int $index) use ($users, $manager) {
+
+        // array_walk($videoGames, function (VideoGame $videoGame, int $index) use ($users, $manager) {
+        foreach ($videoGames as $index => $videoGame) {
             $filteredUsers = $users[$index % count($users)];
 
             foreach ($filteredUsers as $i => $user) {
@@ -84,7 +108,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
                 $this->calculateAverageRating->calculateAverage($videoGame);
                 $this->countRatingsPerValue->countRatingsPerValue($videoGame);
             }
-        });
+        };
 
         $manager->flush();
     }
