@@ -9,7 +9,9 @@ php.local.ini
 /public/bundles/
 /var/
 /vendor/
+
 ###< symfony/framework-bundle ###
+/var/coverage
 
 ###> phpunit/phpunit ###
 /phpunit.xml
