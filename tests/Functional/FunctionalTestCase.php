@@ -51,7 +51,7 @@ abstract class FunctionalTestCase extends WebTestCase
     }
 
     /**
-     * @param array<string, string> $formData
+     * @param array<string, int|string> $formData
      */
     protected function submit(string $buttonLabel, array $formData, string $method = 'POST'): void
     {
