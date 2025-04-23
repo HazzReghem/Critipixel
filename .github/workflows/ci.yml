@@ -1,5 +1,5 @@
 name: CI Pipeline
-# automatically run on every push to the main branch and on pull requests
+
 on:
   push:
     branches:
