@@ -46,6 +46,11 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
+      - name: Install Symfony CLI
+        run: |
+            curl -sS https://get.symfony.com/cli/installer | bash
+            mv ~/.symfony*/bin/symfony /usr/local/bin/symfony
+        
       - name: Setup test database and fixtures
         run: |
           php bin/console doctrine:database:create --env=test --if-not-exists
