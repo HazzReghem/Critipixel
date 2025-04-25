@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Panther\PantherTestCase;
 
-abstract class FunctionalTestCase extends WebTestCase
+abstract class FunctionalTestCase extends PantherTestCase
 {
     // protected KernelBrowser $client;
 
