@@ -13,7 +13,8 @@ final class LoginTest extends FunctionalTestCase
     {
         $crawler = $this->get('/auth/login');
 
-        echo $this->client->getResponse()->getContent();
+        // echo $this->client->getResponse()->getContent();
+
         // $this->get('/auth/login');
 
         // $this->client->submit('Se connecter', [
