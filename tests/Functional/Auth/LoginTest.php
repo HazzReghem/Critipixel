@@ -13,9 +13,13 @@ final class LoginTest extends FunctionalTestCase
     {
         $crawler = $this->get('/auth/login');
 
-        $this->client->submitForm('Se connecter', [
-            'email' => 'user+1@email.com',
-            'password' => 'password'
+        // $this->client->submitForm('Se connecter', [
+        //     'email' => 'user+1@email.com',
+        //     'password' => 'password'
+        // ]);
+        $form = $crawler->selectButton('Se connecter')->form([
+            'email' => 'user@email.com',
+            'password' => 'password',
         ]);
 
         $authorizationChecker = $this->service(AuthorizationCheckerInterface::class);
@@ -31,9 +35,13 @@ final class LoginTest extends FunctionalTestCase
     {
         $crawler = $this->get('/auth/login');
 
-        $this->client->submitForm('Se connecter', [
-            'email' => 'user+1@email.com',
-            'password' => 'fail'
+        // $this->client->submitForm('Se connecter', [
+        //     'email' => 'user+1@email.com',
+        //     'password' => 'fail'
+        // ]);
+        $form = $crawler->selectButton('Se connecter')->form([
+            'email' => 'user@email.com',
+            'password' => 'password',
         ]);
 
         $authorizationChecker = $this->service(AuthorizationCheckerInterface::class);
