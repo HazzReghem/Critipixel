@@ -54,12 +54,22 @@ final class AddRatingTest extends WebTestCase
     public function testShouldNotAllowMultipleReviewsFromSameUser(): void
     {
         $this->login();
-        $this->client->request('GET', '/jeu-video-49');
+        // $this->client->request('GET', '/jeu-video-49');
 
-        $this->client->submitForm('Poster', [
+        // $this->client->submitForm('Poster', [
+        //     'review[rating]' => 5,
+        //     'review[comment]' => 'Première note',
+        // ]);
+        $crawler = $this->client->request('GET', '/jeu-video-49');
+        echo $this->client->getResponse()->getContent();
+
+
+        $form = $crawler->selectButton('Poster')->form([
             'review[rating]' => 5,
             'review[comment]' => 'Première note',
         ]);
+
+        $this->client->submit($form);
 
         $this->client->followRedirect();
 
@@ -72,25 +82,47 @@ final class AddRatingTest extends WebTestCase
     public function testShouldRejectInvalidReview(): void
     {
         $this->login();
-        $this->client->request('GET', '/jeu-video-49');
+        // $this->client->request('GET', '/jeu-video-49');
 
-        // Test note manquante
-        $this->client->submitForm('Poster', [
+        // // Test note manquante
+        // $this->client->submitForm('Poster', [
+        //     'review[rating]' => '',
+        //     'review[comment]' => 'Note manquante',
+        // ]);
+
+        // self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        // self::assertSelectorExists('.form-error-message');
+
+        // // Test commentaire trop long
+        // $this->client->submitForm('Poster', [
+        //     'review[rating]' => 3,
+        //     'review[comment]' => str_repeat('A', 2001), // 2001 caractères
+        // ]);
+
+        // self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        // self::assertSelectorExists('.form-error-message');
+        $crawler = $this->client->request('GET', '/jeu-video-49');
+
+        // Premier test : note vide
+        $form1 = $crawler->selectButton('Poster')->form([
             'review[rating]' => '',
             'review[comment]' => 'Note manquante',
         ]);
-
+        $this->client->submit($form1);
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         self::assertSelectorExists('.form-error-message');
 
-        // Test commentaire trop long
-        $this->client->submitForm('Poster', [
+        // Recharger le formulaire pour le second test
+        $crawler = $this->client->request('GET', '/jeu-video-49');
+
+        $form2 = $crawler->selectButton('Poster')->form([
             'review[rating]' => 3,
-            'review[comment]' => str_repeat('A', 2001), // 2001 caractères
+            'review[comment]' => str_repeat('A', 2001),
         ]);
-
+        $this->client->submit($form2);
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         self::assertSelectorExists('.form-error-message');
+
     }
 
     // test restriction d'accès
