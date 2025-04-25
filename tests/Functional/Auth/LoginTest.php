@@ -11,16 +11,17 @@ final class LoginTest extends FunctionalTestCase
 {
     public function testThatLoginShouldSucceeded(): void
     {
-        $crawler = $this->get('/auth/login');
+        // $crawler = $this->get('/auth/login');
+        $this->get('/auth/login');
 
-        // $this->client->submitForm('Se connecter', [
-        //     'email' => 'user+1@email.com',
-        //     'password' => 'password'
-        // ]);
-        $form = $crawler->selectButton('Se connecter')->form([
-            'email' => 'user@email.com',
-            'password' => 'password',
+        $this->client->submit('Se connecter', [
+            'email' => 'user+1@email.com',
+            'password' => 'password'
         ]);
+        // $form = $crawler->selectButton('Se connecter')->form([
+        //     'email' => 'user@email.com',
+        //     'password' => 'password',
+        // ]);
 
         $authorizationChecker = $this->service(AuthorizationCheckerInterface::class);
 
@@ -33,16 +34,17 @@ final class LoginTest extends FunctionalTestCase
 
     public function testThatLoginShouldFailed(): void
     {
-        $crawler = $this->get('/auth/login');
+        // $crawler = $this->get('/auth/login');
+        // $this->get('/auth/login');
 
-        // $this->client->submitForm('Se connecter', [
-        //     'email' => 'user+1@email.com',
-        //     'password' => 'fail'
-        // ]);
-        $form = $crawler->selectButton('Se connecter')->form([
-            'email' => 'user@email.com',
-            'password' => 'password',
+        $this->client->submit('/auth/login', 'Se connecter', [
+            'email' => 'user+1@email.com',
+            'password' => 'fail'
         ]);
+        // $form = $crawler->selectButton('Se connecter')->form([
+        //     'email' => 'user@email.com',
+        //     'password' => 'password',
+        // ]); 
 
         $authorizationChecker = $this->service(AuthorizationCheckerInterface::class);
 
