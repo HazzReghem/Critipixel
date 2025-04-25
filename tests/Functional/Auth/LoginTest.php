@@ -12,6 +12,8 @@ final class LoginTest extends FunctionalTestCase
     public function testThatLoginShouldSucceeded(): void
     {
         $crawler = $this->get('/auth/login');
+
+        echo $this->client->getResponse()->getContent();
         // $this->get('/auth/login');
 
         // $this->client->submit('Se connecter', [
@@ -50,7 +52,7 @@ final class LoginTest extends FunctionalTestCase
         ]); 
 
         $this->client->submit($form);
-        
+
         $authorizationChecker = $this->service(AuthorizationCheckerInterface::class);
 
         self::assertFalse($authorizationChecker->isGranted('IS_AUTHENTICATED'));
