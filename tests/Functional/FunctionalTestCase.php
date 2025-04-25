@@ -11,17 +11,19 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Panther\PantherTestCase;
 
-abstract class FunctionalTestCase extends PantherTestCase
+abstract class FunctionalTestCase extends WebTestCase
 {
-    // protected KernelBrowser $client;
+    protected KernelBrowser $client;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->client = static::createPantherClient([
-            'external_base_uri' => $_ENV['APP_URL'],
-        ]);
+        $this->client = static::createClient();
+
+        // $this->client = static::createPantherClient([
+        //     'external_base_uri' => $_ENV['APP_URL'],
+        // ]);
     }
 
     // protected function getEntityManager(): EntityManagerInterface
