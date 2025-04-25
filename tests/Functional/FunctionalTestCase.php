@@ -20,10 +20,6 @@ abstract class FunctionalTestCase extends WebTestCase
         parent::setUp();
 
         $this->client = static::createClient();
-
-        // $this->client = static::createPantherClient([
-        //     'external_base_uri' => $_ENV['APP_URL'],
-        // ]);
     }
 
     // protected function getEntityManager(): EntityManagerInterface
@@ -49,13 +45,9 @@ abstract class FunctionalTestCase extends WebTestCase
     /**
      * @param array<string, string|int|bool|float|array<string, scalar>> $parameters
      */
-    // protected function get(string $uri, array $parameters = []): Crawler
-    // {
-    //     return $this->client->request('GET', $uri, $parameters);
-    // }
-    protected function get(string $url): void
+    protected function get(string $uri, array $parameters = []): Crawler
     {
-        $this->client->request('GET', $url);
+        return $this->client->request('GET', $uri, $parameters);
     }
 
     // protected function login(string $email = 'user+0@email.com'): void
@@ -67,6 +59,9 @@ abstract class FunctionalTestCase extends WebTestCase
     protected function login(string $email = 'user+0@email.com'): void
     {
         $user = $this->getEntityManager()->getRepository(User::class)->findOneByEmail($email);
+        if (!$user) {
+            throw new \RuntimeException("Utilisateur de test '$email' non trouvé."); // Ajout d'une vérification
+        }
         $this->client->loginUser($user);
     }
 
