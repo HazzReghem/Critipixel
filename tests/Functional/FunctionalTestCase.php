@@ -9,20 +9,28 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Panther\PantherTestCase;
 
 abstract class FunctionalTestCase extends WebTestCase
 {
-    protected KernelBrowser $client;
+    // protected KernelBrowser $client;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = static::createClient();
+
+        $this->client = static::createPantherClient([
+            'external_base_uri' => $_ENV['APP_URL'],
+        ]);
     }
 
+    // protected function getEntityManager(): EntityManagerInterface
+    // {
+    //     return $this->service(EntityManagerInterface::class);
+    // }
     protected function getEntityManager(): EntityManagerInterface
     {
-        return $this->service(EntityManagerInterface::class);
+        return static::getContainer()->get(EntityManagerInterface::class);
     }
 
     /**
@@ -32,21 +40,31 @@ abstract class FunctionalTestCase extends WebTestCase
      */
     protected function service(string $id): object
     {
-        return $this->client->getContainer()->get($id);
+        // return $this->client->getContainer()->get($id);
+        return static::getContainer()->get($id);
     }
 
     /**
      * @param array<string, string|int|bool|float|array<string, scalar>> $parameters
      */
-    protected function get(string $uri, array $parameters = []): Crawler
+    // protected function get(string $uri, array $parameters = []): Crawler
+    // {
+    //     return $this->client->request('GET', $uri, $parameters);
+    // }
+    protected function get(string $url): void
     {
-        return $this->client->request('GET', $uri, $parameters);
+        $this->client->request('GET', $url);
     }
 
+    // protected function login(string $email = 'user+0@email.com'): void
+    // {
+    //     $user = $this->service(EntityManagerInterface::class)->getRepository(User::class)->findOneByEmail($email);
+
+    //     $this->client->loginUser($user);
+    // }
     protected function login(string $email = 'user+0@email.com'): void
     {
-        $user = $this->service(EntityManagerInterface::class)->getRepository(User::class)->findOneByEmail($email);
-
+        $user = $this->getEntityManager()->getRepository(User::class)->findOneByEmail($email);
         $this->client->loginUser($user);
     }
 
